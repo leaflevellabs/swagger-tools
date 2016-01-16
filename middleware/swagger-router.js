@@ -410,7 +410,21 @@ exports = module.exports = function (options) {
 
             debug('Handler threw an unexpected error: %s\n%s', err.message, err.stack);
           }
-        } else if (options.ignoreMissingHandlers !== true) {
+        }
+        // this logic branch added to allow the passing of a missingHandler function that can essentially
+        // 'catch' any requests if not already handled.  This means that specific handlers can be assigned
+        // as expected, and mocks can be handled as well.  However, if the missingHandler is passed into the
+        // options, it will be evaluated and will supercede the value passed for ignoreMissingHandlers.
+        else if (options.missingHandler && _.isFunction(options.missingHandler)) {
+	        try {
+		        return options.missingHandler(req, res, next);
+	        } catch (err) {
+		        rErr = err;
+
+		        debug('Handler threw an unexpected error: %s\n%s', err.message, err.stack);
+	        }
+        }
+        else if (options.ignoreMissingHandlers !== true) {
           rErr = new Error('Cannot resolve the configured swagger-router handler: ' + handlerName);
 
           res.statusCode = 500;
