@@ -396,6 +396,7 @@ exports = module.exports = function (options) {
         debug('  Route handler: %s', handlerName);
         debug('    Missing: %s', _.isUndefined(handler) ? 'yes' : 'no');
         debug('    Ignored: %s', options.ignoreMissingHandlers === true ? 'yes' : 'no');
+	      debug('    Using missing handler: %s', options.missingHandler && _.isFunction(options.missingHandler) ? 'yes' : 'no');
         debug('    Using mock: %s', options.useStubs && _.isUndefined(handler) ? 'yes' : 'no');
 
         if (_.isUndefined(handler) && options.useStubs === true) {
